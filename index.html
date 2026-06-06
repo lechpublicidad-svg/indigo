@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Indigo Food — Menú del Día</title>
+<title>Indigo Food — Menú del Día v2</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -811,8 +811,8 @@ function construirMensaje() {
   const hoy = new Date();
   const fecha = dias[hoy.getDay()] + ', ' + hoy.getDate() + ' de ' + meses[hoy.getMonth()] + ' de ' + hoy.getFullYear();
 
-  const platos = document.getElementById('platos').value.trim();
-  const entradas = document.getElementById('entradas').value.trim();
+  const platosRaw = document.getElementById('platos').value.trim();
+  const entradasRaw = document.getElementById('entradas').value.trim();
   const acomp = document.getElementById('acompañamientos').value.trim();
   const novedades = document.getElementById('novedades').value.trim();
 
@@ -836,12 +836,12 @@ function construirMensaje() {
   msg += '📅 ' + fecha + '\n';
   msg += '────────────────────────────────\n\n';
 
-  if (platos) {
-    msg += '🍽️ *PLATOS DEL MENÚ*\n' + platos + '\n\n';
+  if (platosRaw) {
+    msg += '🍽️ *PLATOS DEL MENÚ*\n' + platosRaw + '\n\n';
   }
 
-  if (entradas) {
-    msg += '🥗 *ENTRADAS*\n' + entradas + '\n\n';
+  if (entradasRaw) {
+    msg += '🥗 *ENTRADAS*\n' + entradasRaw + '\n\n';
   }
 
   if (acomp) {
@@ -859,7 +859,28 @@ function construirMensaje() {
   }
 
   msg += '────────────────────────────────\n';
-  msg += '🔴 *Indigo Food* — Menú enviado por el Chef 👨‍🍳';
+  msg += '🔴 *Indigo Food* — Menú enviado por el Chef 👨‍🍳\n\n';
+
+  // ── SECCIÓN DISEÑO DE IMÁGENES ──
+  const platos = platosRaw ? platosRaw.split('\n').map(p => p.replace(/^•\s*/, '').trim()).filter(p => p) : [];
+  const entradas = entradasRaw ? entradasRaw.split('\n').map(e => e.replace(/^•\s*/, '').trim()).filter(e => e) : [];
+
+  if (platos.length > 0) {
+    msg += '════════════════════════════════\n';
+    msg += '🎨 *DISEÑO DE IMÁGENES*\n';
+    msg += '════════════════════════════════\n\n';
+
+    platos.forEach((plato, i) => {
+      const entrada = entradas[i] ? entradas[i] : (entradas[0] ? entradas[0] : '');
+      msg += '📸 *IMAGEN ' + (i + 1) + ' — MENÚ DEL DÍA*\n';
+      msg += '🍽️ Plato: ' + plato + '\n';
+      if (acomp) msg += '🌽 Acompañantes: ' + acomp.replace(/•\s*/g, '').replace(/\n/g, ' / ').trim() + '\n';
+      if (entrada) msg += '🥗 Entrada: ' + entrada + '\n';
+      msg += '🍮 Postre\n';
+      msg += '🥤 Jugo\n';
+      if (i < platos.length - 1) msg += '\n';
+    });
+  }
 
   return msg;
 }
